@@ -20,12 +20,12 @@ Route => <http://localhost:3333/doctor/:string>
 
 Route => <http://localhost:3333/doctor>
 Body => {
-"name":"teste",
+"name":"Fulano",
 "crm":"52.555.46",
 "telefonefixo":"999999999",
 "telefonecell":"888888888",
-"cep":"05184-700",
-"especialidade":["Neuro", "Rino"]
+"cep":"05184-054",
+"especialidade":["ALERGOLOGIA", "ANGIOLOGIA"]
 }
 
 ## Create Especialty
