@@ -2,7 +2,10 @@ import { getRepository } from 'typeorm';
 
 import AppError from '../errors/AppError';
 
-import Doctor from '../models/Doctor';
+import QueryCep from './QueryCep';
+import ValidateSpecialty from './ValidateSpecialty';
+
+import Doctors from '../models/Doctors';
 
 interface IDoctor {
   name: string;
@@ -10,6 +13,7 @@ interface IDoctor {
   telefonefixo: string;
   telefonecell: string;
   cep: string;
+  endereco: string[];
   especialidade: string[];
 }
 
@@ -21,8 +25,8 @@ class CreateDoctorService {
     telefonecell,
     cep,
     especialidade,
-  }: IDoctor): Promise<Doctor> {
-    const usersRepository = getRepository(Doctor);
+  }: IDoctor): Promise<Doctors> {
+    const usersRepository = getRepository(Doctors);
 
     const checkUserExists = await usersRepository.findOne({
       where: { crm },
@@ -31,17 +35,31 @@ class CreateDoctorService {
       throw new AppError('CRM já cadastrado', 400);
     }
 
-    // Cria o usuário na memoria
+    // validate cep
+    const queryCep = new QueryCep();
+    const adress = await queryCep.execute(cep);
+    if (adress.erro === true) {
+      throw new AppError('CEP not found', 400);
+    }
+
+    // validate specialty
+    const existsSpecialty = new ValidateSpecialty();
+    const specialtysValid = await existsSpecialty.execute(especialidade);
+
+    if (specialtysValid === false) {
+      throw new AppError('Alguma das especialidades está inválida', 400);
+    }
+
     const user = usersRepository.create({
       name,
       crm,
       telefonefixo,
       telefonecell,
       cep,
+      endereco: adress,
       especialidade,
     });
 
-    // Salva o usuário no banco
     await usersRepository.save(user);
     return user;
   }

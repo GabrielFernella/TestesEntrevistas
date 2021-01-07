@@ -28,6 +28,9 @@ class Doctors {
   cep: string;
 
   @Column('simple-array')
+  endereco: string[];
+
+  @Column('simple-array')
   especialidade: string[];
 
   @CreateDateColumn()

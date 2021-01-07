@@ -39,6 +39,11 @@ export default class CreateDoctor1609891670178 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'endereco',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
             name: 'especialidade',
             type: 'varchar',
             isNullable: false,
